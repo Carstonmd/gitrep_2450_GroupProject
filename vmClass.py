@@ -57,6 +57,7 @@ class virtualMachine:
     def validate(user_input):
         print("Validate here")
 
+<<<<<<< HEAD
 #main method if we want it not in a seperate class
 def main():
     vm = virtualMachine()
@@ -68,3 +69,7 @@ def main():
 #running main
 if __name__ == "__main__":
     main()
+=======
+
+        #ADDED A CHANGE FOR TEST GIT
+>>>>>>> 0dabb6649fb982b97efcc06fdffbfee9fbe4bd81
