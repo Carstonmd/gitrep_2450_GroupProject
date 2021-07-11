@@ -1,14 +1,16 @@
 class virtualMachine:
-    memory = [100]
-    operand = 0
-    exitCode = -99999
-    opCode = 0
 
-    InstructCounter = 0
-    InstructRegister = 0
-    Accumulator = 0
-    LineNum = 0
-    LoadDialog = ""
+    def __init__(self):
+        self.memory = [100]
+        self.operand = 0
+        self.exitCode = -99999
+        self.opCode = 0
+
+        self.InstructCounter = 0
+        self.InstructRegister = 0
+        self.Accumulator = 0
+        self.LineNum = 0
+        self.LoadDialog = ""
 
     #This is where our function definitions are
 
@@ -26,7 +28,6 @@ class virtualMachine:
     #this will return a string
     def LinePrompt():
         print("Somehow Different")
-    #This calls the validate function
-    def Validate():
-        print("Return a string")
-    
+    #this will validate input from users
+    def validate(user_input):
+        print("Validate here")
