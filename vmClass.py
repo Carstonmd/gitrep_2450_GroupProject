@@ -1,5 +1,5 @@
 class virtualMachine:
-
+    #default constructor
     def __init__(self):
         self.memory = [100]
         self.operand = 0
@@ -34,3 +34,5 @@ class virtualMachine:
 
 
         #ADDED A CHANGE FOR TEST GIT
+
+        #A NEW ONE
