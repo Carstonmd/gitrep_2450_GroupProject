@@ -1,3 +1,11 @@
+"""CS 2450 Scrumsters
+Duncan DeNiro,
+Carston Dastrup
+Aaron Brown
+Andrew Campbell
+"""
+
+
 class virtualMachine:
     #default constructor
     def __init__(self):
@@ -48,14 +56,61 @@ class virtualMachine:
 
     #Calls the prompt to the console. This likely will be called on load.
     #this may return a string?
-    def Prompt():
-        print("PROMPT EM")
+    def prompt():
+        print("""
+            
+            _   ___   _____ ___ __  __ 
+            | | | \ \ / / __|_ _|  \/  |
+            | |_| |\ V /\__ \| || |\/| |
+            \___/  \_/ |___/___|_|  |_|
+                Welcome to UVSim
+        This program interprets and runs programs written in the BasicML language.
+
+        Usage: The program is entered line by line. Once your program has been entered enter -99999 to run the application.
+        You will be prompted with each line number sequentially followed by ? where you can input your BasicML for that line.
+            """)
+
     #this will return a string
     def LinePrompt():
-        print("Somehow Different")
+        #LineNum  requires some class name/required variable to iterate.
+        return input("{:02d}?".format(LineNum)) 
+
     #this will validate input from users
     def validate(user_input):
-        print("Validate here")
+    # Opcodes
+        opcodes = [10, 11, 20, 21, 30, 31, 32, 33, 40, 41, 42, 43]
+
+        # convert input to string
+        input_to_string = str(user_input)
+
+        # check if input is a negative value
+        if input_to_string[0] == '-':
+            input_to_string = input_to_string[1:2]
+        operator = input_to_string[:2]
+
+        # Exit Code
+        exit_code = -99999
+
+        # check for entry
+        if user_input is None:
+            print(f'No input detected')
+
+        # check for none integer input
+        if not isinstance(user_input, int):
+            print(f'{user_input} please enter integers only')
+        # check opcode
+        if int(operator) not in opcodes:
+            print(f'{user_input} incorrect operator entered')
+
+
+    def validate_memory(curr_mem_len):
+        if curr_mem_len > 100:
+            print(f'Memory Exceeded')
+
+
+    def validate_instruct_counter(curr_counter_value):
+        if curr_counter_value > 100:
+            print(f'Too many entries have been made')
 
 #main method if we want it not in a seperate class
 def main():
@@ -65,12 +120,17 @@ def main():
     
 
 
-<<<<<<< HEAD
         #ADDED A CHANGE FOR TEST GIT
 
         #A NEW ONE
-=======
 #running main
 if __name__ == "__main__":
     main()
->>>>>>> 0609de66092334eca50e15a30b4cdbdc43940c62
+    prompt()
+    user_input_value = -1011
+    user_input_string = str(user_input_value)
+    if user_input_string[0] == '-':
+        user_input_string = user_input_string[1:3]
+
+    print(len(user_input_string))
+    print(user_input_string[:2])
