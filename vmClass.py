@@ -9,9 +9,9 @@ Andrew Campbell
 class virtualMachine:
     #default constructor
     def __init__(self):
-        self.memory = [[]]*100# memory is a list of lists declared here
+        self.memory = [None]*100# list of size 100 filled with zero's
         for i in range(100):
-            self.memory[i] = [0,0,0,0,0]
+            self.memory[i] = 0
         self.operand = 0
         self.exitCode = -99999
         self.opCode = 0
@@ -25,18 +25,18 @@ class virtualMachine:
     #This is where our function definitions are
 
     #logError does not return anything but will post an error log to console, I believe.
-    def LogError(message):
+    def LogError(self,message):
         print("Returns nothing")
     
 
-    #Dump is a memory dump I think
+    #Dump, display all whats stored in memory
     def Dump(self):
         print("\nREGISTERS:          ")
-        print("Accumulator:          ")# todo
-        print("InstrucctionCounter:  ")# todo
-        print("InstructionRegister:  ")# todo
-        print("OperationCode:        ")# todo
-        print("Operand:              ")# todo
+        print("Accumulator:          " + str(self.Accumulator))
+        print("InstrucctionCounter:  " + str(self.InstructCounter))
+        print("InstructionRegister:  " + str(self.InstructRegister))
+        print("OperationCode:        " + str(self.opCode))
+        print("Operand:              " + str(self.operand))
         #Below is getting the format of the array displayed
         multiple = 0
         counter = 10
@@ -48,9 +48,8 @@ class virtualMachine:
                 multiple += 1
                 counter = 0
             counter +=1    
-            for value in range(5):
-                word = str(index[value])
-                print(word, end ="")
+            print(f"{index:05d}",end="")#displaying with leading zeros
+            #print(index,end="") # if we use a string instead
             print(" ",end=" ")
 
 
@@ -73,10 +72,10 @@ class virtualMachine:
     #this will return a string
     def LinePrompt(self):
         #LineNum  requires some class name/required variable to iterate.
-        return input("{:02d}?".format(LineNum)) 
+        return input("{:02d}?".format(self.LineNum)) 
 
     #this will validate input from users
-    def validate(user_input):
+    def validate(self,user_input):
     # Opcodes
         opcodes = [10, 11, 20, 21, 30, 31, 32, 33, 40, 41, 42, 43]
 
@@ -103,13 +102,13 @@ class virtualMachine:
             print(f'{user_input} incorrect operator entered')
 
 
-    def validate_memory(curr_mem_len):
-        if curr_mem_len > 100:
+    def validate_memory(self,curr_mem_len):
+        if curr_mem_len > len(self.memory):
             print(f'Memory Exceeded')
 
 
-    def validate_instruct_counter(curr_counter_value):
-        if curr_counter_value > 100:
+    def validate_instruct_counter(self,curr_counter_value):
+        if curr_counter_value > len(self.memory):
             print(f'Too many entries have been made')
 
     #main method if we want it not in a seperate class
@@ -122,6 +121,7 @@ def main():
     if user_input_string[0] == '-':
         user_input_string = user_input_string[1:3]
 
+    vm.validate(user_input_string)
 
     vm.Dump()
 
