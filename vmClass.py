@@ -115,16 +115,16 @@ class virtualMachine:
     #main method if we want it not in a seperate class
 def main():
     vm = virtualMachine()
-    vm.Dump()
+
     vm.prompt()
     user_input_value = -1011
     user_input_string = str(user_input_value)
     if user_input_string[0] == '-':
         user_input_string = user_input_string[1:3]
-    print(len(user_input_string))
-    print(user_input_string[:2])
-    # to access a certain memory location use vm.memory[i][j] 
-    #running main
+
+
+    vm.Dump()
+
 if __name__ == "__main__":
     main()
     
