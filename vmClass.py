@@ -56,7 +56,7 @@ class virtualMachine:
 
     #Calls the prompt to the console. This likely will be called on load.
     #this may return a string?
-    def prompt():
+    def prompt(self):
         print("""
             
             _   ___   _____ ___ __  __ 
@@ -71,7 +71,7 @@ class virtualMachine:
             """)
 
     #this will return a string
-    def LinePrompt():
+    def LinePrompt(self):
         #LineNum  requires some class name/required variable to iterate.
         return input("{:02d}?".format(LineNum)) 
 
@@ -112,25 +112,19 @@ class virtualMachine:
         if curr_counter_value > 100:
             print(f'Too many entries have been made')
 
-#main method if we want it not in a seperate class
+    #main method if we want it not in a seperate class
 def main():
     vm = virtualMachine()
-    vm.Dump() # to access a certain memory location use vm.memory[i][j] 
-    
-    
-
-
-        #ADDED A CHANGE FOR TEST GIT
-
-        #A NEW ONE
-#running main
-if __name__ == "__main__":
-    main()
-    prompt()
+    vm.Dump()
+    vm.prompt()
     user_input_value = -1011
     user_input_string = str(user_input_value)
     if user_input_string[0] == '-':
         user_input_string = user_input_string[1:3]
-
     print(len(user_input_string))
     print(user_input_string[:2])
+    # to access a certain memory location use vm.memory[i][j] 
+    #running main
+if __name__ == "__main__":
+    main()
+    
