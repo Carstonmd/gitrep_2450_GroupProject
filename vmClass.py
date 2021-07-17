@@ -49,7 +49,6 @@ class virtualMachine:
                 counter = 0
             counter +=1    
             print(f"{index:05d}",end="")#displaying with leading zeros
-            #print(index,end="") # if we use a string instead
             print(" ",end=" ")
 
 
@@ -110,12 +109,30 @@ class virtualMachine:
     def validate_instruct_counter(self,curr_counter_value):
         if curr_counter_value > len(self.memory):
             print(f'Too many entries have been made')
-
+    #running a while loop getting the first instruction inputs seperating them in their own lists
+    def execute(self):
+        print("*** Please enter your program one instruction ***\n*** ( or data word ) at a time into the input ***\n*** text field. I will display the location ***\n*** number and a question mark (?). You then ***\n*** type the word for that location. Enter ***\n*** -99999 to stop entering your program. ***")
+        incoming = None
+        inc = 0
+        storedOpCodes = []
+        storedMemory = []
+        while incoming != "-99999":
+            if inc < 10:
+                print("0" + str(inc) + " ? ",end="")
+            else:
+                print(str(inc) + " ? ",end="")
+            inc += 1
+            incoming = input()
+            storedMemory.append(incoming[2:])#memory list
+            storedOpCodes.append(incoming[:2])#opcode list
+        
+                    
     #main method if we want it not in a seperate class
 def main():
     vm = virtualMachine()
 
     vm.prompt()
+    vm.execute()
     user_input_value = -1011
     user_input_string = str(user_input_value)
     if user_input_string[0] == '-':
