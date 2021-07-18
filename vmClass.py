@@ -15,6 +15,9 @@ class virtualMachine:
         self.operand = 0
         self.exitCode = -99999
         self.opCode = 0
+        self.storedOpCodes = []#list of input opcodes
+        self.storedMemory = []#list of input memory loccation
+        self.validate_pass = True
 
         self.InstructCounter = 0
         self.InstructRegister = 0
@@ -75,31 +78,57 @@ class virtualMachine:
 
     #this will validate input from users
     def validate(self,user_input):
-    # Opcodes
+        # Opcodes
         opcodes = [10, 11, 20, 21, 30, 31, 32, 33, 40, 41, 42, 43]
-
-        # convert input to string
-        input_to_string = str(user_input)
-
-        # check if input is a negative value
-        if input_to_string[0] == '-':
-            input_to_string = input_to_string[1:2]
-        operator = input_to_string[:2]
-
-        # Exit Code
-        exit_code = -99999
+        # exitcode
+        exit_code = str(-99999)
 
         # check for entry
         if user_input is None:
-            print(f'No input detected')
+            self.validate_pass = False
+            return print(f'No input detected'), self.validate_pass
+            return print(f'No input detected')
 
         # check for none integer input
-        if not isinstance(user_input, int):
-            print(f'{user_input} please enter integers only')
-        # check opcode
-        if int(operator) not in opcodes:
-            print(f'{user_input} incorrect operator entered')
+        if user_input.isalpha():
+            self.validate_pass = False
+            return print(f'{user_input} please enter integers only'), self.validate_pass
+            return print(f'{user_input} please enter integers only')
 
+        # convert input to string
+        input_to_string = str(user_input)
+        if input_to_string == exit_code:
+            return print(f'exit code')
+        # check for input less than 4
+        if len(input_to_string) <= 4:
+            if len(input_to_string) < 4:
+                self.validate_pass = False
+                return print(f'{input_to_string} has too few digits')
+            if input_to_string[0] == '-':
+                self.validate_pass = False
+                return print(f'{input_to_string} has too few digits')
+        # check to make sure input is either length 5 if signed or 4 if unsigned
+        if len(input_to_string) >= 5 and input_to_string != exit_code:
+            if len(input_to_string) > 5:
+                self.validate_pass = False
+                return print(f'{input_to_string} has too many digits')
+            if len(input_to_string) == 5 and input_to_string[0] != '-':
+                self.validate_pass = False
+                return print(f'{input_to_string} must be 4 digits only')
+        # check if input is a negative value
+        if input_to_string[0] == '-':
+            if input_to_string != exit_code:
+                # slice opcode as substring
+                input_to_string = input_to_string[1:]
+                operator = input_to_string[0:2]
+                # check opcode
+                if int(operator) not in opcodes:
+                    self.validate_pass = False
+                    return print(f'{user_input} incorrect operator entered')
+        input_operator = input_to_string[0:2]
+        if int(input_operator) not in opcodes:
+            self.validate_pass = False
+            return print(f'{user_input} incorrect operator entered')
 
     def validate_memory(self,curr_mem_len):
         if curr_mem_len > len(self.memory):
@@ -114,17 +143,48 @@ class virtualMachine:
         print("*** Please enter your program one instruction ***\n*** ( or data word ) at a time into the input ***\n*** text field. I will display the location ***\n*** number and a question mark (?). You then ***\n*** type the word for that location. Enter ***\n*** -99999 to stop entering your program. ***")
         incoming = None
         inc = 0
-        storedOpCodes = []
-        storedMemory = []
+
         while incoming != "-99999":
             if inc < 10:
                 print("0" + str(inc) + " ? ",end="")
             else:
                 print(str(inc) + " ? ",end="")
-            inc += 1
+            
             incoming = input()
-            storedMemory.append(incoming[2:])#memory list
-            storedOpCodes.append(incoming[:2])#opcode list
+            self.validate(incoming)
+            if self.validate_pass == False:
+                self.validate_pass = True
+                continue
+            inc += 1
+            self.storedMemory.append(incoming[2:])#memory list
+            self.storedOpCodes.append(incoming[:2])#opcode list
+    def loadingStarting(self):
+        print("*** Program loading completed ***\n*** Program execution begins ***")
+        for i in self.storedMemory:
+            if i is "10":# Read
+                pass
+            if i is "11":# Write
+                pass
+            if i is "20":#load
+                pass
+            if i is "21":#Store
+                pass
+            if i is "30":# Add
+                pass
+            if i is "31":#Sbtract
+                pass
+            if i is "32": #Divide
+                pass
+            if i is "33":#Multiply
+                pass
+            if i is "40":# branch
+                pass
+            if i is "41":#branching
+                pass
+            if i is "42":#branchzero
+                pass
+            if i is "43":#halt
+                pass
         
                     
     #main method if we want it not in a seperate class
@@ -133,6 +193,7 @@ def main():
 
     vm.prompt()
     vm.execute()
+    vm.loadingStarting()
     user_input_value = -1011
     user_input_string = str(user_input_value)
     if user_input_string[0] == '-':

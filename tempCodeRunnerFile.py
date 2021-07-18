@@ -1,1 +1,1 @@
-incoming = input()
+please
