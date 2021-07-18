@@ -156,34 +156,36 @@ class virtualMachine:
                 self.validate_pass = True
                 continue
             inc += 1
+            if incoming != "-99999":
+                self.InstructCounter +=1
             self.storedMemory.append(incoming[2:])#memory list
             self.storedOpCodes.append(incoming[:2])#opcode list
     def loadingStarting(self):
         print("*** Program loading completed ***\n*** Program execution begins ***")
-        for i in self.storedMemory:
-            if i is "10":# Read
+        for i in self.storedOpCodes:
+            if i == "10":# Read
                 pass
-            if i is "11":# Write
+            if i == "11":# Write
                 pass
-            if i is "20":#load
+            if i == "20":#load
                 pass
-            if i is "21":#Store
+            if i == "21":#Store
                 pass
-            if i is "30":# Add
+            if i == "30":# Add
                 pass
-            if i is "31":#Sbtract
+            if i == "31":#Sbtract
                 pass
-            if i is "32": #Divide
+            if i == "32": #Divide
                 pass
-            if i is "33":#Multiply
+            if i == "33":#Multiply
                 pass
-            if i is "40":# branch
+            if i == "40":# branch
                 pass
-            if i is "41":#branching
+            if i == "41":#branching
                 pass
-            if i is "42":#branchzero
+            if i == "42":#branchzero
                 pass
-            if i is "43":#halt
+            if i == "43":#halt
                 pass
         
                     
@@ -194,13 +196,6 @@ def main():
     vm.prompt()
     vm.execute()
     vm.loadingStarting()
-    user_input_value = -1011
-    user_input_string = str(user_input_value)
-    if user_input_string[0] == '-':
-        user_input_string = user_input_string[1:3]
-
-    vm.validate(user_input_string)
-
     vm.Dump()
 
 if __name__ == "__main__":
