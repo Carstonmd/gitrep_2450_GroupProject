@@ -45,8 +45,7 @@ class opCodes:
                 mem_loc = op_str[3:]
             return int(mem_loc)
         else:
-            pass
-            'halt()'
+            quit()
 
 
     def read(self, mem_loc, memory_struct):
@@ -149,11 +148,7 @@ class opCodes:
 
 
     def halt(self):
-        """HALT operation:
-            - suspend / pause operations until a interrupt or reset is received
-            - not sure how this works without a reset or interrupt operator; ask professor
-        """
-        pass
+        quit()
 
 
 class virtualMachine:
@@ -318,13 +313,15 @@ class virtualMachine:
                 word = input("Enter an integer:")
                 self.memory[int(self.memory[count])] = int(word)
             if i == "11":# Write
-                pass
+                print(f'WRITE from {self.storedMemory[count]}: {self.memory[int(self.storedMemory[count])]}')
             if i == "20":#load
-                print("Loading from memory to accumuator: ")
+                print("Loading from memory to accumulator: ")
                 value_to_load = self.memory[int(self.storedMemory[count])]
                 self.Accumulator = value_to_load
             if i == "21":#Store
-                pass
+                value_to_store = self.Accumulator
+                self.memory[int(self.memory[count])] = value_to_store
+                print(f'STORE {value_to_store} from accumulator to memory loc.: {self.storedMemory[count]}')
             if i == "30":# Add
                 pass
             if i == "31":#Sbtract
@@ -340,7 +337,7 @@ class virtualMachine:
             if i == "42":#branchzero
                 pass
             if i == "43":#halt
-                pass
+                quit()
             count +=1
         
                     
