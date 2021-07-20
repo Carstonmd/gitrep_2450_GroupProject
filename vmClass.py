@@ -31,126 +31,6 @@ opcodes:
 """
 
 
-class opCodes:
-    #default constructor
-    def __init__(self):
-       pass
-    
-    def mem_add_locator(self,opcode):
-        """extracts mem loc. from opcode and returns 2 digit integer"""
-        op_str = str(opcode)
-        if opcode is not None:
-            mem_loc = op_str[2:]
-            if mem_loc[0] == 0:
-                mem_loc = op_str[3:]
-            return int(mem_loc)
-        else:
-            quit()
-
-
-    def read(self, mem_loc, memory_struct):
-        """READ operation"""
-        word = input("Enter an integer:")
-        memory_struct[int(mem_loc)] = int(word)
-
-
-    def write(self,src_add, memory_struct):
-        """WRITE operation"""
-        mem_loc = self.mem_add_locator(src_add)
-        return print(f'WRITE from {mem_loc}: {memory_struct[mem_loc]}')
-
-
-    def load(self, mem_loc, memory_struct, accumulator):
-        """LOAD operation"""
-        print("Loading from memory to accumuator: ")
-        value_to_load = memory_struct[int(mem_loc)]
-        accumulator = value_to_load#need to figure this out in meeting/teacher
-
-
-    def store(self,dest_add, mem_struct, accum):
-        """STORE operation"""
-        value_to_store = accum
-        mem_loc = self.mem_add_locator(dest_add)
-        mem_struct[mem_loc] = value_to_store
-        return print(f'STORE {value_to_store} from accumulator to memory loc.: {mem_loc}')
-
-
-    def add(self,src_add, mem_struct):
-        """ADD operation"""
-        mem_loc = self.mem_add_locator(src_add)
-        value_to_add = mem_struct[mem_loc]
-        global accumulator
-        accumulator += value_to_add
-        return print(f'ADD {value_to_add} at mem loc. {mem_loc} to accumulator: {accumulator}')
-
-
-    def subtract(self,src_add, mem_struct):
-        """SUBTRACT operation"""
-        mem_loc = self.mem_add_locator(src_add)
-        value_to_sub = mem_struct[mem_loc]
-        global accumulator
-        accumulator -= value_to_sub
-        return print(f'SUBTRACT {value_to_sub} at mem loc. {mem_loc} from accumulator: {accumulator}')
-
-
-    def divide(self,src_add, mem_struct):
-        """DIVIDE operation:
-            may need to check numerator doesnt exceed size of denominator/accumulator value
-            - what is expected behavior if result is float?
-            - ceiling or floor operation?
-        """
-        mem_loc = self.mem_add_locator(src_add)
-        value_denominator = mem_struct[mem_loc]
-        global accumulator
-        accumulator /= value_denominator
-
-        return print(f'DIVIDE {value_denominator} at mem loc. {mem_loc} from accumulator: {int(accumulator)}')
-
-
-    def multiply(self,src_add, mem_struct):
-        """MULTIPLY operation"""
-        mem_loc = self.mem_add_locator(src_add)
-        value_to_multi = mem_struct[mem_loc]
-        global accumulator
-        accumulator *= value_to_multi
-        return print(f'MULTIPLY {value_to_multi} at mem loc. {mem_loc} to accumulator: {int(accumulator)}')
-
-
-    def branch(self,br_add, mem_struct):
-        """BRANCH operation:
-                - move instruction register to branch mem loc.
-        """
-        mem_loc = self.mem_add_locator(br_add)
-        branch_to_add = mem_struct[mem_loc]
-        return print(f'BRANCH to mem loc. {mem_loc} with value: {branch_to_add} ')
-
-
-    def branch_neg(self,br_add, mem_struct):
-        """BRANCHNEG operation:
-                - if value in accumulator is negative: Branch to mem loc.
-        """
-        mem_loc = self.mem_add_locator(br_add)
-        branch_to_add = mem_struct[mem_loc]
-        global accumulator
-        if accumulator < 0:
-            return print(f'BRANCHNEG to mem loc. {mem_loc} with value: {branch_to_add}')
-
-
-    def branch_zero(self,br_add, mem_struct):
-        """BRANCHZERO operation:
-                - if value in accumulator is zero: Branch to mem loc.
-        """
-        mem_loc = self.mem_add_locator(br_add)
-        branch_to_add = mem_struct[mem_loc]
-        global accumulator
-        if accumulator == 0:
-            return print(f'BRANCHZERO to mem loc. {mem_loc} with value: {branch_to_add}')
-
-
-    def halt(self):
-        quit()
-
-
 class virtualMachine:
     #default constructor
     def __init__(self):
@@ -214,11 +94,7 @@ class virtualMachine:
         Usage: The program is entered line by line. Once your program has been entered enter -99999 to run the application.
         You will be prompted with each line number sequentially followed by ? where you can input your BasicML for that line.
             """)
-
-    #this will return a string
-    def LinePrompt(self):
-        #LineNum  requires some class name/required variable to iterate.
-        return input("{:02d}?".format(self.LineNum)) 
+        print("*** Please enter your program one instruction ***\n*** ( or data word ) at a time into the input ***\n*** text field. I will display the location ***\n*** number and a question mark (?). You then ***\n*** type the word for that location. Enter ***\n*** -99999 to stop entering your program. ***")
 
     #this will validate input from users
     def validate(self,user_input):
@@ -284,7 +160,6 @@ class virtualMachine:
             print(f'Too many entries have been made')
     #running a while loop getting the first instruction inputs seperating them in their own lists
     def execute(self):
-        print("*** Please enter your program one instruction ***\n*** ( or data word ) at a time into the input ***\n*** text field. I will display the location ***\n*** number and a question mark (?). You then ***\n*** type the word for that location. Enter ***\n*** -99999 to stop entering your program. ***")
         incoming = None
         inc = 0
 
@@ -306,16 +181,15 @@ class virtualMachine:
             self.storedOpCodes.append(incoming[:2])#opcode list
     def loadingStarting(self):
         print("*** Program loading completed ***\n*** Program execution begins ***")
-        op = opCodes()
         count = 0
-        for i in self.storedOpCodes:
+        for idx, i in enumerate(self.storedOpCodes):
             if i == "10":# Read
                 word = input("Enter an integer:")
                 self.memory[int(self.memory[count])] = int(word)
             if i == "11":# Write
                 print(f'WRITE from {self.storedMemory[count]}: {self.memory[int(self.storedMemory[count])]}')
             if i == "20":#load
-                print("Loading from memory to accumulator: ")
+                print(f"Loading from memory to accumulator:")
                 value_to_load = self.memory[int(self.storedMemory[count])]
                 self.Accumulator = value_to_load
             if i == "21":#Store
@@ -323,20 +197,32 @@ class virtualMachine:
                 self.memory[int(self.memory[count])] = value_to_store
                 print(f'STORE {value_to_store} from accumulator to memory loc.: {self.storedMemory[count]}')
             if i == "30":# Add
-                pass
+                value_to_add = int(self.storedMemory[idx]) #Where idx is the index of the operation/linenumber essentially.
+                self.Accumulator += value_to_add
+                print(f'ADD {value_to_add} at mem loc. {int(self.memory[count])} to accumulator: {self.Accumulator}')
             if i == "31":#Sbtract
-                pass
+                value_to_sub = int(self.storedMemory[idx])
+                self.Accumulator = self.Accumulator - value_to_sub
+                print(f'SUBTRACT {value_to_sub} at mem loc. {int(self.memory[count])} from accumulator: {self.Accumulator}')
             if i == "32": #Divide
-                pass
+                value_denominator = int(self.storedMemory[idx])
+                self.Accumulator //= value_denominator
+                print(f'DIVIDE {value_denominator} at mem loc. {int(self.memory[count])} from accumulator: {int(self.Accumulator)}')
             if i == "33":#Multiply
+                value_to_multi = int(self.storedMemory[idx])
+                self.Accumulator *= value_to_multi
+                print(f'MULTIPLY {value_to_multi} at mem loc. {int(self.memory[count])} to accumulator: {int(self.Accumulator)}')
+            if i == "40":  # branch
+                branch_add = int(self.storedMemory[count])
+                self.memory[int(branch_add)]
+                print(self.memory[int(branch_add)])
+            if i == "41":  # branching
+                branch_add = int(self.storedMemory[count])
+                if self.Accumulator < 0:
+                    self.memory[int(branch_add)]
+            if i == "42":  # branchzero
                 pass
-            if i == "40":# branch
-                pass
-            if i == "41":#branching
-                pass
-            if i == "42":#branchzero
-                pass
-            if i == "43":#halt
+            if i == "43":  # halt
                 quit()
             count +=1
         
