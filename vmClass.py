@@ -29,15 +29,14 @@ opcodes:
                                                             is zero
                 HALT       43     None                      Pause program
 """
+
+
 class opCodes:
     #default constructor
     def __init__(self):
-        accumulator = 0
-        "global variable"
+       pass
     
-
-
-    def mem_add_locator(opcode):
+    def mem_add_locator(self,opcode):
         """extracts mem loc. from opcode and returns 2 digit integer"""
         op_str = str(opcode)
         if opcode is not None:
@@ -50,61 +49,58 @@ class opCodes:
             'halt()'
 
 
-    def read(dest_add, memory_struct, word):
+    def read(self, mem_loc, memory_struct):
         """READ operation"""
-        mem_loc = mem_add_locator(dest_add)
-        memory_struct[mem_loc] = word
-        return print(f'READ from {mem_loc}: {memory_struct[mem_loc]}')
+        word = input("Enter an integer:")
+        memory_struct[int(mem_loc)] = int(word)
 
 
-    def write(src_add, memory_struct):
+    def write(self,src_add, memory_struct):
         """WRITE operation"""
-        mem_loc = mem_add_locator(src_add)
+        mem_loc = self.mem_add_locator(src_add)
         return print(f'WRITE from {mem_loc}: {memory_struct[mem_loc]}')
 
 
-    def load(src_add, memory_struct):
+    def load(self, mem_loc, memory_struct, accumulator):
         """LOAD operation"""
-        mem_loc = mem_add_locator(src_add)
-        value_to_load = memory_struct[mem_loc]
-        global accumulator
-        accumulator = value_to_load
-        return print(f'LOAD from {mem_loc} to Accumulator {accumulator}')
+        print("Loading from memory to accumuator: ")
+        value_to_load = memory_struct[int(mem_loc)]
+        accumulator = value_to_load#need to figure this out in meeting/teacher
 
 
-    def store(dest_add, mem_struct, accum):
+    def store(self,dest_add, mem_struct, accum):
         """STORE operation"""
         value_to_store = accum
-        mem_loc = mem_add_locator(dest_add)
+        mem_loc = self.mem_add_locator(dest_add)
         mem_struct[mem_loc] = value_to_store
         return print(f'STORE {value_to_store} from accumulator to memory loc.: {mem_loc}')
 
 
-    def add(src_add, mem_struct):
+    def add(self,src_add, mem_struct):
         """ADD operation"""
-        mem_loc = mem_add_locator(src_add)
+        mem_loc = self.mem_add_locator(src_add)
         value_to_add = mem_struct[mem_loc]
         global accumulator
         accumulator += value_to_add
         return print(f'ADD {value_to_add} at mem loc. {mem_loc} to accumulator: {accumulator}')
 
 
-    def subtract(src_add, mem_struct):
+    def subtract(self,src_add, mem_struct):
         """SUBTRACT operation"""
-        mem_loc = mem_add_locator(src_add)
+        mem_loc = self.mem_add_locator(src_add)
         value_to_sub = mem_struct[mem_loc]
         global accumulator
         accumulator -= value_to_sub
         return print(f'SUBTRACT {value_to_sub} at mem loc. {mem_loc} from accumulator: {accumulator}')
 
 
-    def divide(src_add, mem_struct):
+    def divide(self,src_add, mem_struct):
         """DIVIDE operation:
             may need to check numerator doesnt exceed size of denominator/accumulator value
             - what is expected behavior if result is float?
             - ceiling or floor operation?
         """
-        mem_loc = mem_add_locator(src_add)
+        mem_loc = self.mem_add_locator(src_add)
         value_denominator = mem_struct[mem_loc]
         global accumulator
         accumulator /= value_denominator
@@ -112,47 +108,47 @@ class opCodes:
         return print(f'DIVIDE {value_denominator} at mem loc. {mem_loc} from accumulator: {int(accumulator)}')
 
 
-    def multiply(src_add, mem_struct):
+    def multiply(self,src_add, mem_struct):
         """MULTIPLY operation"""
-        mem_loc = mem_add_locator(src_add)
+        mem_loc = self.mem_add_locator(src_add)
         value_to_multi = mem_struct[mem_loc]
         global accumulator
         accumulator *= value_to_multi
         return print(f'MULTIPLY {value_to_multi} at mem loc. {mem_loc} to accumulator: {int(accumulator)}')
 
 
-    def branch(br_add, mem_struct):
+    def branch(self,br_add, mem_struct):
         """BRANCH operation:
                 - move instruction register to branch mem loc.
         """
-        mem_loc = mem_add_locator(br_add)
+        mem_loc = self.mem_add_locator(br_add)
         branch_to_add = mem_struct[mem_loc]
         return print(f'BRANCH to mem loc. {mem_loc} with value: {branch_to_add} ')
 
 
-    def branch_neg(br_add, mem_struct):
+    def branch_neg(self,br_add, mem_struct):
         """BRANCHNEG operation:
                 - if value in accumulator is negative: Branch to mem loc.
         """
-        mem_loc = mem_add_locator(br_add)
+        mem_loc = self.mem_add_locator(br_add)
         branch_to_add = mem_struct[mem_loc]
         global accumulator
         if accumulator < 0:
             return print(f'BRANCHNEG to mem loc. {mem_loc} with value: {branch_to_add}')
 
 
-    def branch_zero(br_add, mem_struct):
+    def branch_zero(self,br_add, mem_struct):
         """BRANCHZERO operation:
                 - if value in accumulator is zero: Branch to mem loc.
         """
-        mem_loc = mem_add_locator(br_add)
+        mem_loc = self.mem_add_locator(br_add)
         branch_to_add = mem_struct[mem_loc]
         global accumulator
         if accumulator == 0:
             return print(f'BRANCHZERO to mem loc. {mem_loc} with value: {branch_to_add}')
 
 
-    def halt():
+    def halt(self):
         """HALT operation:
             - suspend / pause operations until a interrupt or reset is received
             - not sure how this works without a reset or interrupt operator; ask professor
@@ -315,13 +311,18 @@ class virtualMachine:
             self.storedOpCodes.append(incoming[:2])#opcode list
     def loadingStarting(self):
         print("*** Program loading completed ***\n*** Program execution begins ***")
+        op = opCodes()
+        count = 0
         for i in self.storedOpCodes:
             if i == "10":# Read
-                pass
+                word = input("Enter an integer:")
+                self.memory[int(self.memory[count])] = int(word)
             if i == "11":# Write
                 pass
             if i == "20":#load
-                pass
+                print("Loading from memory to accumuator: ")
+                value_to_load = self.memory[int(self.storedMemory[count])]
+                self.Accumulator = value_to_load
             if i == "21":#Store
                 pass
             if i == "30":# Add
@@ -340,6 +341,7 @@ class virtualMachine:
                 pass
             if i == "43":#halt
                 pass
+            count +=1
         
                     
     #main method if we want it not in a seperate class
