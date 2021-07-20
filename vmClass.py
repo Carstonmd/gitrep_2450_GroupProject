@@ -185,7 +185,7 @@ class virtualMachine:
         for idx, i in enumerate(self.storedOpCodes):
             if i == "10":# Read
                 word = input("Enter an integer:")
-                self.memory[int(self.memory[count])] = int(word)
+                self.memory[int(self.storedMemory[count])] = int(word)
             if i == "11":# Write
                 print(f'WRITE from {self.storedMemory[count]}: {self.memory[int(self.storedMemory[count])]}')
             if i == "20":#load
