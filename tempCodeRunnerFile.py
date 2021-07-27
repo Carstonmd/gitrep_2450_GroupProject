@@ -1,1 +1,1 @@
-accumulato
+self.memory[

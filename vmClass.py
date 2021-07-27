@@ -174,11 +174,15 @@ class virtualMachine:
             if self.validate_pass == False:
                 self.validate_pass = True
                 continue
-            inc += 1
+            
+            
             if incoming != "-99999":
                 self.InstructCounter +=1
+                self.memory[inc] = int(incoming)
+                inc += 1
             self.storedMemory.append(incoming[2:])#memory list
             self.storedOpCodes.append(incoming[:2])#opcode list
+
     def loadingStarting(self):
         print("*** Program loading completed ***\n*** Program execution begins ***")
         count = 0
@@ -194,22 +198,22 @@ class virtualMachine:
                 self.Accumulator = value_to_load
             if i == "21":#Store
                 value_to_store = self.Accumulator
-                self.memory[int(self.memory[count])] = value_to_store
+                self.memory[int(self.storedMemory[count])] = value_to_store
                 print(f'STORE {value_to_store} from accumulator to memory loc.: {self.storedMemory[count]}')
             if i == "30":# Add
                 value_to_add = int(self.storedMemory[idx]) #Where idx is the index of the operation/linenumber essentially.
                 self.Accumulator += value_to_add
                 print(f'ADD {value_to_add} at mem loc. {int(self.memory[count])} to accumulator: {self.Accumulator}')
             if i == "31":#Sbtract
-                value_to_sub = int(self.storedMemory[idx])
+                value_to_sub = self.memory[int(self.storedMemory[idx])]
                 self.Accumulator = self.Accumulator - value_to_sub
                 print(f'SUBTRACT {value_to_sub} at mem loc. {int(self.memory[count])} from accumulator: {self.Accumulator}')
             if i == "32": #Divide
-                value_denominator = int(self.storedMemory[idx])
+                value_denominator = self.memory[int(self.storedMemory[idx])]
                 self.Accumulator //= value_denominator
                 print(f'DIVIDE {value_denominator} at mem loc. {int(self.memory[count])} from accumulator: {int(self.Accumulator)}')
             if i == "33":#Multiply
-                value_to_multi = int(self.storedMemory[idx])
+                value_to_multi = self.memory[int(self.storedMemory[idx])]
                 self.Accumulator *= value_to_multi
                 print(f'MULTIPLY {value_to_multi} at mem loc. {int(self.memory[count])} to accumulator: {int(self.Accumulator)}')
             if i == "40":  # branch
