@@ -1,4 +1,4 @@
-"""CS 2450 Scrumsters
+ """CS 2450 Scrumsters
 Duncan DeNiro,
 Carston Dastrup
 Aaron Brown
@@ -29,6 +29,48 @@ opcodes:
                                                             is zero
                 HALT       43     None                      Pause program
 """
+class opCode:
+    def __init__(self, memoryLocation, codeName)
+        self.memoryLocation = memoryLocation
+        self.codeName = codeName
+    
+
+#i/o ops
+class read(opCode):
+    pass
+
+class write(opCode):
+    pass
+
+class writeAscii(opcode):
+    pass
+
+#load ops
+class load(opCode):
+    pass
+class store(opCode):
+    pass
+class setaccum(opCode):
+    pass
+#Arithmetic
+class add(opCode):
+    pass
+class subtract(opCode):
+    pass
+class divide(opCode):
+    pass
+class multiply(opCode):
+    pass
+#Control
+class brancn(opCode):
+    pass
+class branchZero(opCode):
+    pass
+class branchNeg(opCode):
+    pass
+class halt(opCode):
+    pass
+
 
 
 class virtualMachine:
