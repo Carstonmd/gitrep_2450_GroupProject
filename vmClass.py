@@ -30,20 +30,27 @@ opcodes:
                 HALT       43     None                      Pause program
 """
 class opCode:
-    def __init__(self, memoryLocation, codeName)
+    def __init__(self, memoryLocation, codeName):
         self.memoryLocation = memoryLocation
         self.codeName = codeName
     
 
 #i/o ops
 class read(opCode):
-    pass
-
+    
+    def readData(vm):
+        word = input("Enter an integer:")
+        vm.memory[int(vm.storedMemory[count])] = int(word)
+        return vm
+        
 class write(opCode):
     pass
 
-class writeAscii(opcode):
-    pass
+
+class writeAscii(opCode):
+    pass    
+
+
 
 #load ops
 class load(opCode):
@@ -227,11 +234,11 @@ class virtualMachine:
 
     def loadingStarting(self):
         print("*** Program loading completed ***\n*** Program execution begins ***")
+        opRead = read()
         count = 0
         for idx, i in enumerate(self.storedOpCodes):
             if i == "10":# Read
-                word = input("Enter an integer:")
-                self.memory[int(self.storedMemory[count])] = int(word)
+                opRead.read(self)
             if i == "11":# Write
                 print(f'WRITE from {self.storedMemory[count]}: {self.memory[int(self.storedMemory[count])]}')
             if i == "20":#load
