@@ -1,4 +1,4 @@
- """CS 2450 Scrumsters
+"""CS 2450 Scrumsters
 Duncan DeNiro,
 Carston Dastrup
 Aaron Brown
@@ -46,11 +46,16 @@ class read(opCode):
 class write(opCode):
     pass
 
+<<<<<<< HEAD
 
 class writeAscii(opCode):
     pass    
 
 
+=======
+class writeAscii(opCode):
+    pass
+>>>>>>> 506401a90d9bf0979ec3165c269a10b9f6166996
 
 #load ops
 class load(opCode):
@@ -69,13 +74,14 @@ class divide(opCode):
 class multiply(opCode):
     pass
 #Control
-class brancn(opCode):
+class branch(opCode):
     pass
 class branchZero(opCode):
     pass
 class branchNeg(opCode):
     pass
 class halt(opCode):
+    #quit()
     pass
 
 
@@ -87,7 +93,7 @@ class virtualMachine:
         for i in range(100):
             self.memory[i] = 0
         self.operand = 0
-        self.exitCode = -99999
+        self.exitCode = -999999
         self.opCode = 0
         self.storedOpCodes = []#list of input opcodes
         self.storedMemory = []#list of input memory loccation
@@ -118,14 +124,14 @@ class virtualMachine:
         multiple = 0
         counter = 10
         print("\nMEMORY:")
-        print("    00     01     02     03     04     05     06     07     08     09",end="")
+        print("    00      01      02      03      04      05      06      07      08      09",end="")
         for index in self.memory:
             if counter % 10 == 0:
                 print("\n"+str(multiple) + "0 ", end =" ")
                 multiple += 1
                 counter = 0
             counter +=1    
-            print(f"{index:05d}",end="")#displaying with leading zeros
+            print(f"{index:06d}",end="")#displaying with leading zeros
             print(" ",end=" ")
 
 
@@ -143,14 +149,14 @@ class virtualMachine:
         Usage: The program is entered line by line. Once your program has been entered enter -99999 to run the application.
         You will be prompted with each line number sequentially followed by ? where you can input your BasicML for that line.
             """)
-        print("*** Please enter your program one instruction ***\n*** ( or data word ) at a time into the input ***\n*** text field. I will display the location ***\n*** number and a question mark (?). You then ***\n*** type the word for that location. Enter ***\n*** -99999 to stop entering your program. ***")
+        print("*** Please enter your program one instruction ***\n*** ( or data word ) at a time into the input ***\n*** text field. I will display the location ***\n*** number and a question mark (?). You then ***\n*** type the word for that location. Enter ***\n*** -999999 to stop entering your program. ***")
 
     #this will validate input from users
     def validate(self,user_input):
         # Opcodes
         opcodes = [10, 11, 20, 21, 30, 31, 32, 33, 40, 41, 42, 43]
         # exitcode
-        exit_code = str(-99999)
+        exit_code = str(-999999)
 
         # check for entry
         if user_input is None:
@@ -163,27 +169,26 @@ class virtualMachine:
             self.validate_pass = False
             return print(f'{user_input} please enter integers only'), self.validate_pass
             return print(f'{user_input} please enter integers only')
-
         # convert input to string
         input_to_string = str(user_input)
         if input_to_string == exit_code:
             return print(f'exit code')
-        # check for input less than 4
-        if len(input_to_string) <= 4:
-            if len(input_to_string) < 4:
+        # check for input less than 5
+        if len(input_to_string) <= 5:
+            if len(input_to_string) < 5:
                 self.validate_pass = False
                 return print(f'{input_to_string} has too few digits')
             if input_to_string[0] == '-':
                 self.validate_pass = False
                 return print(f'{input_to_string} has too few digits')
-        # check to make sure input is either length 5 if signed or 4 if unsigned
-        if len(input_to_string) >= 5 and input_to_string != exit_code:
-            if len(input_to_string) > 5:
+        # check to make sure input is either length 6 if signed or 5 if unsigned
+        if len(input_to_string) >= 6 and input_to_string != exit_code:
+            if len(input_to_string) > 6:
                 self.validate_pass = False
                 return print(f'{input_to_string} has too many digits')
-            if len(input_to_string) == 5 and input_to_string[0] != '-':
+            if len(input_to_string) == 6 and input_to_string[0] != '-':
                 self.validate_pass = False
-                return print(f'{input_to_string} must be 4 digits only')
+                return print(f'{input_to_string} must be 5 digits only')
         # check if input is a negative value
         if input_to_string[0] == '-':
             if input_to_string != exit_code:
@@ -198,6 +203,11 @@ class virtualMachine:
         if int(input_operator) not in opcodes:
             self.validate_pass = False
             return print(f'{user_input} incorrect operator entered')
+        # check to see if it is within memory
+        input_memory = input_to_string[2:]
+        if int(input_memory) >= 100:
+            self.validate_pass = False
+            return print(f'{user_input} out of memory')
 
     def validate_memory(self,curr_mem_len):
         if curr_mem_len > len(self.memory):
@@ -212,7 +222,7 @@ class virtualMachine:
         incoming = None
         inc = 0
 
-        while incoming != "-99999":
+        while incoming != "-999999":
             if inc < 10:
                 print("0" + str(inc) + " ? ",end="")
             else:
@@ -225,11 +235,11 @@ class virtualMachine:
                 continue
             
             
-            if incoming != "-99999":
+            if incoming != "-999999":
                 self.InstructCounter +=1
                 self.memory[inc] = int(incoming)
                 inc += 1
-            self.storedMemory.append(incoming[2:])#memory list
+            self.storedMemory.append(incoming[3:])#memory list
             self.storedOpCodes.append(incoming[:2])#opcode list
 
     def loadingStarting(self):
