@@ -1,1 +1,1 @@
-self.memory[
+OpcodeOperation
