@@ -269,7 +269,7 @@ class writeAscii(OpcodeOperation, OpcodeObject, virtualMachine):
 # load ops
 class load(OpcodeOperation, OpcodeObject, virtualMachine):
     def operation(self, opcode_obj: OpcodeObject,vm:virtualMachine):
-        operand = opcode_obj.operand
+        operand = int(opcode_obj.operand)
         value_to_load = vm.memory[operand]
         vm.Accumulator = value_to_load
 
