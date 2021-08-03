@@ -218,17 +218,17 @@ class Opcodes(OpcodeObject):#took out virtualmachine
         opcode_dict = {'10': 'read(self)',
                         '11': 'write(self)',
                         '12': 'writeAscii(self)',
-                        '20': 'load()',
-                        '21': 'store()',
-                        '22': 'setAccum()',
-                        '30': 'add()',
-                        '31': 'subtract()',
-                        '32': 'divide()',
-                        '33': 'multiply()',
-                        '40': 'branch()',
-                        '41': 'branchNeg()',
-                        '42': 'branchZero()',
-                        '43': 'halt()'}
+                        '20': 'load(self)',
+                        '21': 'store(self)',
+                        '22': 'setAccum(self)',
+                        '30': 'add(self)',
+                        '31': 'subtract(self)',
+                        '32': 'divide(self)',
+                        '33': 'multiply(self)',
+                        '40': 'branch(self)',
+                        '41': 'branchNeg(self)',
+                        '42': 'branchZero(self)',
+                        '43': 'halt(self)'}
 
         if opcode_operation.operator in opcode_dict:
             operation_class = opcode_dict[opcode_operation.operator]#setting variable to the correct value
@@ -257,14 +257,13 @@ class read(OpcodeOperation, OpcodeObject, virtualMachine):#maybe needs OpcodeObj
 class write(OpcodeOperation, OpcodeObject, virtualMachine):
     def operation(self, opcode_obj: OpcodeObject,vm:virtualMachine):
         operand = int(opcode_obj.operand)
-        print("Write")
-        #print(f'WRITE from {vm.memory[operand]}: {vm.memory[int(vm.memory[operand])]}')
+        print(f'WRITE from {operand}: {vm.memory[operand]}')
 
 
-class writeAscii(OpcodeOperation):
-    def operation(self, opcode_obj: OpcodeObject):
-        operand = opcode_obj.operand
-        print(f'WRITE from {self.storedMemory[operand]}: {chr(self.memory[int(self.memory[operand])])}')
+class writeAscii(OpcodeOperation, OpcodeObject, virtualMachine):
+    def operation(self, opcode_obj: OpcodeObject,vm:virtualMachine):
+        operand = int(opcode_obj.operand)
+        print(f'WRITE from {operand}: {chr(vm.memory[operand])}')
 
 
 # load ops
@@ -275,80 +274,78 @@ class load(OpcodeOperation, OpcodeObject, virtualMachine):
         vm.Accumulator = value_to_load
 
 
-class store(OpcodeOperation):
-    def operation(self, opcode_obj: OpcodeObject):
+class store(OpcodeOperation, OpcodeObject, virtualMachine):
+    def operation(self, opcode_obj: OpcodeObject,vm:virtualMachine):
         operand = opcode_obj.operand
-        value_to_store = self.Accumulator
-        self.memory[operand] = value_to_store
+        value_to_store = vm.Accumulator
+        vm.memory[operand] = value_to_store
 
 
-class setAccum(OpcodeOperation):
-    def operation(self, opcode_obj: OpcodeObject):
+class setAccum(OpcodeOperation, OpcodeObject, virtualMachine):
+    def operation(self, opcode_obj: OpcodeObject,vm:virtualMachine):
         accum_value = opcode_obj.operand
-        self.Accumulator = accum_value
+        vm.Accumulator = accum_value
 
 
 # Arithmetic
-class add(OpcodeOperation):
-    def operation(self, opcode_obj: OpcodeObject):
-        operand = opcode_obj.operand
-        value_to_add = self.memory[int(operand)]
-        self.Accumulator += value_to_add  # Use setAccum?
-        print(f'ADD {value_to_add} at mem loc. {int(self.memory[operand])} to accumulator: {self.Accumulator}')
+class add(OpcodeOperation, OpcodeObject, virtualMachine):
+    def operation(self, opcode_obj: OpcodeObject,vm:virtualMachine):
+        operand = int(opcode_obj.operand)
+        value_to_add = vm.memory[int(operand)]
+        vm.Accumulator += value_to_add 
+        print(f'ADD {value_to_add} at mem loc. {int(vm.memory[operand])} to accumulator: {vm.Accumulator}')
 
 
-class subtract(OpcodeOperation):
-    def operation(self, opcode_obj: OpcodeObject):
-        operand = opcode_obj.operand
-        value_to_sub = self.memory[int(operand)]
-        self.Accumulator = - value_to_sub  # Use setAccum?
-        print(f'SUBTRACT {value_to_sub} at mem loc. {int(self.memory[operand])} from accumulator: {self.Accumulator}')
+class subtract(OpcodeOperation, OpcodeObject, virtualMachine):
+    def operation(self, opcode_obj: OpcodeObject,vm:virtualMachine):
+        operand = int(opcode_obj.operand)
+        value_to_sub = vm.memory[int(operand)]
+        vm.Accumulator = - value_to_sub
+        print(f'SUBTRACT {value_to_sub} at mem loc. {int(vm.memory[operand])} from accumulator: {vm.Accumulator}')
 
 
-class divide(OpcodeOperation):
-    def operation(self, opcode_obj: OpcodeObject):
-        operand = opcode_obj.operand
-        value_denominator = self.memory[int(operand)]
-        self.Accumulator //= value_denominator
-        print(
-            f'DIVIDE {value_denominator} at mem loc. {int(self.memory[operand])} from accumulator: {int(self.Accumulator)}')
+class divide(OpcodeOperation, OpcodeObject, virtualMachine):
+    def operation(self, opcode_obj: OpcodeObject,vm:virtualMachine):
+        operand = int(opcode_obj.operand)
+        value_denominator = vm.memory[int(operand)]
+        vm.Accumulator //= value_denominator
+        print(f'DIVIDE {value_denominator} at mem loc. {int(vm.memory[operand])} from accumulator: {int(vm.Accumulator)}')
 
 
-class multiply(OpcodeOperation):
-    def operation(self, opcode_obj: OpcodeObject):
-        operand = opcode_obj.operand
-        value_to_multi = self.memory[int(operand)]
-        self.Accumulator *= value_to_multi
-        print(
-            f'MULTIPLY {value_to_multi} at mem loc. {int(self.memory[operand])} to accumulator: {int(self.Accumulator)}')
+class multiply(OpcodeOperation, OpcodeObject, virtualMachine):
+    def operation(self, opcode_obj: OpcodeObject,vm:virtualMachine):
+        operand = int(opcode_obj.operand)
+        value_to_multi = vm.memory[int(operand)]
+        vm.Accumulator *= value_to_multi
+        print(f'MULTIPLY {value_to_multi} at mem loc. {int(vm.memory[operand])} to accumulator: {int(vm.Accumulator)}')
 
 
 # Control
-class branch(OpcodeOperation):
-    def operation(self, opcode_obj: OpcodeObject):
+class branch(OpcodeOperation, OpcodeObject, virtualMachine):
+    def operation(self, opcode_obj: OpcodeObject,vm:virtualMachine):
         branch_address = opcode_obj.operand
-        value = self.memory[int(branch_address)]  # if value at address is needed
-        self.InstructRegister = opcode_obj.opcode_str
-        self.InstructCounter = int(branch_address) + 1
+        value = vm.memory[int(branch_address)]  # if value at address is needed
+        vm.InstructRegister = opcode_obj.opcode_str
+        vm.InstructCounter = int(branch_address) + 1
         return
 
 
-class branchZero(OpcodeOperation):
-    def operation(self, opcode_obj: OpcodeObject):
+class branchZero(OpcodeOperation, OpcodeObject, virtualMachine):
+    def operation(self, opcode_obj: OpcodeObject,vm:virtualMachine):
         branch_address = opcode_obj.operand
-        if self.Accumulator == 0:
-            self.InstructCounter = int(branch_address)
-            self.InstructRegister = opcode_obj.opcode_str
+        if vm.Accumulator == 0:
+            vm.InstructCounter = int(branch_address)
+            vm.InstructRegister = opcode_obj.opcode_str
         return
 
 
-class branchNeg(OpcodeOperation):
-    def operation(self, opcode_obj: OpcodeObject):
+class branchNeg(OpcodeOperation, OpcodeObject, virtualMachine):
+    def operation(self, opcode_obj: OpcodeObject,vm:virtualMachine):
         branch_address = opcode_obj.operand
-        value = self.memory[int(branch_address)]  # if value at address is needed
-        if self.Accumulator < 0:
-            self.InstructCounter = int(branch_address)
-            self.InstructRegister = opcode_obj.opcode_str
+        value = vm.memory[int(branch_address)]  # if value at address is needed
+        if vm.Accumulator < 0:
+            vm.InstructCounter = int(branch_address)
+            vm.InstructRegister = opcode_obj.opcode_str
 
 
 class halt(OpcodeOperation):
