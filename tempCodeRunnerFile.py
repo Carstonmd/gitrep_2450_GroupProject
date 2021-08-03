@@ -1,1 +1,1 @@
-OpcodeOperation
+self

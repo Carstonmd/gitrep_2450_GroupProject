@@ -191,9 +191,6 @@ class virtualMachine:
             if opcode != "0":
                 op = OpcodeObject(opcode)
                 Opcodes(self).opcode_find(self,op)
-                #op = Opcodes()
-                #op_obj = OpcodeObject(opcode)
-                #op.opcode_execute(op)
 
         count += 1
 #########################################################
@@ -219,8 +216,8 @@ class Opcodes(OpcodeObject):#took out virtualmachine
 
     def opcode_find(self,vm, opcode_operation: OpcodeOperation):
         opcode_dict = {'10': 'read(self)',
-                        '11': 'write()',
-                        '12': 'writeAscii()',
+                        '11': 'write(self)',
+                        '12': 'writeAscii(self)',
                         '20': 'load()',
                         '21': 'store()',
                         '22': 'setAccum()',
@@ -248,24 +245,20 @@ class Opcodes(OpcodeObject):#took out virtualmachine
             
 #io
 class read(OpcodeOperation, OpcodeObject, virtualMachine):#maybe needs OpcodeObject passed
-    #def __init__(self, vm):
-        #super().__init__()
-        #self.vm = vm
+
     def operation(self, opcode_obj: OpcodeObject,vm:virtualMachine):#
         operand = opcode_obj.operand
         word = input("Enter a value: ")
         vm.memory[int(operand)] = int(word)
-    
-        #self.vm.memory[int(operand)] = int(word)
-        #self.memory[int(operand)] = int(word)
-        #self.InstructRegister = opcode_obj.opcode_str
-        #self.InstructCounter = self.memory.index(opcode_obj.opcode_str) + 1
+        vm.InstructRegister = opcode_obj.opcode_str
+        #vm.InstructCounter = vm.memory.index(opcode_obj.opcode_str) + 1
         return    
 
-class write(OpcodeOperation):
-    def operation(self, opcode_obj: OpcodeObject):
-        operand = opcode_obj.operand
-        print(f'WRITE from {self.memory[operand]}: {self.memory[int(self.memory[operand])]}')
+class write(OpcodeOperation, OpcodeObject, virtualMachine):
+    def operation(self, opcode_obj: OpcodeObject,vm:virtualMachine):
+        operand = int(opcode_obj.operand)
+        print("Write")
+        #print(f'WRITE from {vm.memory[operand]}: {vm.memory[int(vm.memory[operand])]}')
 
 
 class writeAscii(OpcodeOperation):
@@ -275,11 +268,11 @@ class writeAscii(OpcodeOperation):
 
 
 # load ops
-class load(OpcodeOperation):
-    def operation(self, opcode_obj: OpcodeObject):
+class load(OpcodeOperation, OpcodeObject, virtualMachine):
+    def operation(self, opcode_obj: OpcodeObject,vm:virtualMachine):
         operand = opcode_obj.operand
-        value_to_load = self.memory[operand]
-        self.Accumulator = value_to_load
+        value_to_load = vm.memory[operand]
+        vm.Accumulator = value_to_load
 
 
 class store(OpcodeOperation):
