@@ -5,6 +5,9 @@ Aaron Brown
 Andrew Campbell
 """
 import math
+from abc import ABC, abstractmethod
+import ast
+import importlib
 
 
 """
@@ -29,63 +32,6 @@ opcodes:
                                                             is zero
                 HALT       43     None                      Pause program
 """
-class opCode:
-    def __init__(self, memoryLocation, codeName):
-        self.memoryLocation = memoryLocation
-        self.codeName = codeName
-    
-
-#i/o ops
-class read(opCode):
-    
-    def readData(vm):
-        word = input("Enter an integer:")
-        vm.memory[int(vm.storedMemory[count])] = int(word)
-        return vm
-        
-class write(opCode):
-    pass
-
-<<<<<<< HEAD
-
-class writeAscii(opCode):
-    pass    
-
-
-=======
-class writeAscii(opCode):
-    pass
->>>>>>> 506401a90d9bf0979ec3165c269a10b9f6166996
-
-#load ops
-class load(opCode):
-    pass
-class store(opCode):
-    pass
-class setaccum(opCode):
-    pass
-#Arithmetic
-class add(opCode):
-    pass
-class subtract(opCode):
-    pass
-class divide(opCode):
-    pass
-class multiply(opCode):
-    pass
-#Control
-class branch(opCode):
-    pass
-class branchZero(opCode):
-    pass
-class branchNeg(opCode):
-    pass
-class halt(opCode):
-    #quit()
-    pass
-
-
-
 class virtualMachine:
     #default constructor
     def __init__(self):
@@ -111,7 +57,6 @@ class virtualMachine:
     def LogError(self,message):
         print("Returns nothing")
     
-
     #Dump, display all whats stored in memory
     def Dump(self):
         print("\nREGISTERS:          ")
@@ -134,7 +79,6 @@ class virtualMachine:
             print(f"{index:06d}",end="")#displaying with leading zeros
             print(" ",end=" ")
 
-
     #Calls the prompt to the console. This likely will be called on load.
     #this may return a string?
     def prompt(self):
@@ -154,7 +98,7 @@ class virtualMachine:
     #this will validate input from users
     def validate(self,user_input):
         # Opcodes
-        opcodes = [10, 11, 20, 21, 30, 31, 32, 33, 40, 41, 42, 43]
+        opcodes = [10, 11, 12, 20, 21, 22, 30, 31, 32, 33, 40, 41, 42, 43]
         # exitcode
         exit_code = str(-999999)
 
@@ -237,58 +181,176 @@ class virtualMachine:
             
             if incoming != "-999999":
                 self.InstructCounter +=1
-                self.memory[inc] = int(incoming)
+                self.memory[inc] = int(incoming)#setting input to memory location
                 inc += 1
-            self.storedMemory.append(incoming[3:])#memory list
-            self.storedOpCodes.append(incoming[:2])#opcode list
-
+#########################################################
     def loadingStarting(self):
         print("*** Program loading completed ***\n*** Program execution begins ***")
-        opRead = read()
         count = 0
-        for idx, i in enumerate(self.storedOpCodes):
-            if i == "10":# Read
-                opRead.read(self)
-            if i == "11":# Write
-                print(f'WRITE from {self.storedMemory[count]}: {self.memory[int(self.storedMemory[count])]}')
-            if i == "20":#load
-                print(f"Loading from memory to accumulator:")
-                value_to_load = self.memory[int(self.storedMemory[count])]
-                self.Accumulator = value_to_load
-            if i == "21":#Store
-                value_to_store = self.Accumulator
-                self.memory[int(self.storedMemory[count])] = value_to_store
-                print(f'STORE {value_to_store} from accumulator to memory loc.: {self.storedMemory[count]}')
-            if i == "30":# Add
-                value_to_add = int(self.storedMemory[idx]) #Where idx is the index of the operation/linenumber essentially.
-                self.Accumulator += value_to_add
-                print(f'ADD {value_to_add} at mem loc. {int(self.memory[count])} to accumulator: {self.Accumulator}')
-            if i == "31":#Sbtract
-                value_to_sub = self.memory[int(self.storedMemory[idx])]
-                self.Accumulator = self.Accumulator - value_to_sub
-                print(f'SUBTRACT {value_to_sub} at mem loc. {int(self.memory[count])} from accumulator: {self.Accumulator}')
-            if i == "32": #Divide
-                value_denominator = self.memory[int(self.storedMemory[idx])]
-                self.Accumulator //= value_denominator
-                print(f'DIVIDE {value_denominator} at mem loc. {int(self.memory[count])} from accumulator: {int(self.Accumulator)}')
-            if i == "33":#Multiply
-                value_to_multi = self.memory[int(self.storedMemory[idx])]
-                self.Accumulator *= value_to_multi
-                print(f'MULTIPLY {value_to_multi} at mem loc. {int(self.memory[count])} to accumulator: {int(self.Accumulator)}')
-            if i == "40":  # branch
-                branch_add = int(self.storedMemory[count])
-                self.memory[int(branch_add)]
-                print(self.memory[int(branch_add)])
-            if i == "41":  # branching
-                branch_add = int(self.storedMemory[count])
-                if self.Accumulator < 0:
-                    self.memory[int(branch_add)]
-            if i == "42":  # branchzero
-                pass
-            if i == "43":  # halt
-                quit()
-            count +=1
+        for opcode in self.memory:
+            if opcode != "0":
+                op = OpcodeObject(opcode)
+                Opcodes(self).opcode_find(self,op)
+
+        count += 1
+#########################################################
+# basic opcode object
+class OpcodeObject:
+    operator: str
+    operand: str
+    
+
+    def __init__(self, opcode_str):
+        self.opcode_str = str(opcode_str)
+        self.operator = self.opcode_str[:2]
+        self.operand = self.opcode_str[3:]
         
+
+# class inherits from virtual machine to pass to derived classes
+class OpcodeOperation(ABC):
+    @abstractmethod
+    def operation(self, opcode_obj: OpcodeObject,vm:virtualMachine):
+        pass
+
+class Opcodes(OpcodeObject):#took out virtualmachine
+
+    def opcode_find(self,vm, opcode_operation: OpcodeOperation):
+        opcode_dict = {'10': 'read(self)',
+                        '11': 'write(self)',
+                        '12': 'writeAscii(self)',
+                        '20': 'load(self)',
+                        '21': 'store(self)',
+                        '22': 'setAccum(self)',
+                        '30': 'add(self)',
+                        '31': 'subtract(self)',
+                        '32': 'divide(self)',
+                        '33': 'multiply(self)',
+                        '40': 'branch(self)',
+                        '41': 'branchNeg(self)',
+                        '42': 'branchZero(self)',
+                        '43': 'halt(self)'}
+
+        if opcode_operation.operator in opcode_dict:
+            operation_class = opcode_dict[opcode_operation.operator]#setting variable to the correct value
+            class_to_call = eval(operation_class)
+            ins_class = class_to_call
+            ins_class.operation(opcode_operation,vm)
+
+            #return operation_class
+
+    def opcode_execute(self,opcode_obj: OpcodeObject):
+        op_class = self.opcode_find(opcode_obj)
+        #return op_class(opcode_obj)
+            
+            
+#io
+class read(OpcodeOperation, OpcodeObject, virtualMachine):#maybe needs OpcodeObject passed
+
+    def operation(self, opcode_obj: OpcodeObject,vm:virtualMachine):#
+        operand = opcode_obj.operand
+        word = input("Enter a value: ")
+        vm.memory[int(operand)] = int(word)
+        vm.InstructRegister = opcode_obj.opcode_str
+        #vm.InstructCounter = vm.memory.index(opcode_obj.opcode_str) + 1
+        return    
+
+class write(OpcodeOperation, OpcodeObject, virtualMachine):
+    def operation(self, opcode_obj: OpcodeObject,vm:virtualMachine):
+        operand = int(opcode_obj.operand)
+        print(f'WRITE from {operand}: {vm.memory[operand]}')
+
+
+class writeAscii(OpcodeOperation, OpcodeObject, virtualMachine):
+    def operation(self, opcode_obj: OpcodeObject,vm:virtualMachine):
+        operand = int(opcode_obj.operand)
+        print(f'WRITE from {operand}: {chr(vm.memory[operand])}')
+
+
+# load ops
+class load(OpcodeOperation, OpcodeObject, virtualMachine):
+    def operation(self, opcode_obj: OpcodeObject,vm:virtualMachine):
+        operand = opcode_obj.operand
+        value_to_load = vm.memory[operand]
+        vm.Accumulator = value_to_load
+
+
+class store(OpcodeOperation, OpcodeObject, virtualMachine):
+    def operation(self, opcode_obj: OpcodeObject,vm:virtualMachine):
+        operand = opcode_obj.operand
+        value_to_store = vm.Accumulator
+        vm.memory[operand] = value_to_store
+
+
+class setAccum(OpcodeOperation, OpcodeObject, virtualMachine):
+    def operation(self, opcode_obj: OpcodeObject,vm:virtualMachine):
+        accum_value = opcode_obj.operand
+        vm.Accumulator = accum_value
+
+
+# Arithmetic
+class add(OpcodeOperation, OpcodeObject, virtualMachine):
+    def operation(self, opcode_obj: OpcodeObject,vm:virtualMachine):
+        operand = int(opcode_obj.operand)
+        value_to_add = vm.memory[int(operand)]
+        vm.Accumulator += value_to_add 
+        print(f'ADD {value_to_add} at mem loc. {int(vm.memory[operand])} to accumulator: {vm.Accumulator}')
+
+
+class subtract(OpcodeOperation, OpcodeObject, virtualMachine):
+    def operation(self, opcode_obj: OpcodeObject,vm:virtualMachine):
+        operand = int(opcode_obj.operand)
+        value_to_sub = vm.memory[int(operand)]
+        vm.Accumulator = - value_to_sub
+        print(f'SUBTRACT {value_to_sub} at mem loc. {int(vm.memory[operand])} from accumulator: {vm.Accumulator}')
+
+
+class divide(OpcodeOperation, OpcodeObject, virtualMachine):
+    def operation(self, opcode_obj: OpcodeObject,vm:virtualMachine):
+        operand = int(opcode_obj.operand)
+        value_denominator = vm.memory[int(operand)]
+        vm.Accumulator //= value_denominator
+        print(f'DIVIDE {value_denominator} at mem loc. {int(vm.memory[operand])} from accumulator: {int(vm.Accumulator)}')
+
+
+class multiply(OpcodeOperation, OpcodeObject, virtualMachine):
+    def operation(self, opcode_obj: OpcodeObject,vm:virtualMachine):
+        operand = int(opcode_obj.operand)
+        value_to_multi = vm.memory[int(operand)]
+        vm.Accumulator *= value_to_multi
+        print(f'MULTIPLY {value_to_multi} at mem loc. {int(vm.memory[operand])} to accumulator: {int(vm.Accumulator)}')
+
+
+# Control
+class branch(OpcodeOperation, OpcodeObject, virtualMachine):
+    def operation(self, opcode_obj: OpcodeObject,vm:virtualMachine):
+        branch_address = opcode_obj.operand
+        value = vm.memory[int(branch_address)]  # if value at address is needed
+        vm.InstructRegister = opcode_obj.opcode_str
+        vm.InstructCounter = int(branch_address) + 1
+        return
+
+
+class branchZero(OpcodeOperation, OpcodeObject, virtualMachine):
+    def operation(self, opcode_obj: OpcodeObject,vm:virtualMachine):
+        branch_address = opcode_obj.operand
+        if vm.Accumulator == 0:
+            vm.InstructCounter = int(branch_address)
+            vm.InstructRegister = opcode_obj.opcode_str
+        return
+
+
+class branchNeg(OpcodeOperation, OpcodeObject, virtualMachine):
+    def operation(self, opcode_obj: OpcodeObject,vm:virtualMachine):
+        branch_address = opcode_obj.operand
+        value = vm.memory[int(branch_address)]  # if value at address is needed
+        if vm.Accumulator < 0:
+            vm.InstructCounter = int(branch_address)
+            vm.InstructRegister = opcode_obj.opcode_str
+
+
+class halt(OpcodeOperation):
+    def operation(self, opcode_obj: OpcodeObject):
+        quit()
                     
     #main method if we want it not in a seperate class
 def main():
