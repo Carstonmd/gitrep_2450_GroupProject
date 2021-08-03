@@ -183,14 +183,14 @@ class virtualMachine:
                 self.InstructCounter +=1
                 self.memory[inc] = int(incoming)#setting input to memory location
                 inc += 1
-#########################################################3
+#########################################################
     def loadingStarting(self):
         print("*** Program loading completed ***\n*** Program execution begins ***")
         count = 0
         for opcode in self.memory:
             if opcode != "0":
                 op = OpcodeObject(opcode)
-                Opcodes(op).opcode_find(op)
+                Opcodes(self).opcode_find(self,op)
                 #op = Opcodes()
                 #op_obj = OpcodeObject(opcode)
                 #op.opcode_execute(op)
@@ -201,22 +201,24 @@ class virtualMachine:
 class OpcodeObject:
     operator: str
     operand: str
+    
 
     def __init__(self, opcode_str):
         self.opcode_str = str(opcode_str)
         self.operator = self.opcode_str[:2]
         self.operand = self.opcode_str[3:]
+        
 
 # class inherits from virtual machine to pass to derived classes
-class OpcodeOperation(ABC, virtualMachine):
+class OpcodeOperation(ABC):
     @abstractmethod
-    def operation(self, opcode_obj: OpcodeObject):
+    def operation(self, opcode_obj: OpcodeObject,vm:virtualMachine):
         pass
 
 class Opcodes(OpcodeObject):#took out virtualmachine
 
-    def opcode_find(self, opcode_operation: OpcodeOperation):
-        opcode_dict = {'10': 'read()',
+    def opcode_find(self,vm, opcode_operation: OpcodeOperation):
+        opcode_dict = {'10': 'read(self)',
                         '11': 'write()',
                         '12': 'writeAscii()',
                         '20': 'load()',
@@ -235,7 +237,7 @@ class Opcodes(OpcodeObject):#took out virtualmachine
             operation_class = opcode_dict[opcode_operation.operator]#setting variable to the correct value
             class_to_call = eval(operation_class)
             ins_class = class_to_call
-            ins_class.operation(OpcodeOperation)
+            ins_class.operation(opcode_operation,vm)
 
             #return operation_class
 
@@ -245,15 +247,19 @@ class Opcodes(OpcodeObject):#took out virtualmachine
             
             
 #io
-class read(OpcodeOperation, OpcodeObject):#maybe needs OpcodeObject passed
-    def __init__(self):
-        super().__init__()
-    def operation(self, opcode_obj: OpcodeObject):#
+class read(OpcodeOperation, OpcodeObject, virtualMachine):#maybe needs OpcodeObject passed
+    #def __init__(self, vm):
+        #super().__init__()
+        #self.vm = vm
+    def operation(self, opcode_obj: OpcodeObject,vm:virtualMachine):#
         operand = opcode_obj.operand
         word = input("Enter a value: ")
-        self.memory[int(operand)] = int(word)
-        self.InstructRegister = opcode_obj.opcode_str
-        self.InstructCounter = self.memory.index(opcode_obj.opcode_str) + 1
+        vm.memory[int(operand)] = int(word)
+    
+        #self.vm.memory[int(operand)] = int(word)
+        #self.memory[int(operand)] = int(word)
+        #self.InstructRegister = opcode_obj.opcode_str
+        #self.InstructCounter = self.memory.index(opcode_obj.opcode_str) + 1
         return    
 
 class write(OpcodeOperation):
