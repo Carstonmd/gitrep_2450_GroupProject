@@ -7,7 +7,7 @@ Andrew Campbell
 import math
 from abc import ABC, abstractmethod
 import ast
-import importlib, datetime
+import importlib, datetime, ast
 #SLIGHT CHANGE!!
 
 """
@@ -110,6 +110,8 @@ class virtualMachine:
 
         if user_input == "save":
             return (f'Saving')
+        if user_input == "load":
+            return (f'loading')
         # check for none integer input
         if user_input.isalpha():
             self.validate_pass = False
@@ -168,7 +170,7 @@ class virtualMachine:
         incoming = None
         inc = 0
 
-        while (incoming != "-999999" and incoming != "save"):
+        while (incoming != "-999999" and incoming != "save" and incoming != "load"):
             if inc < 10:
                 print("0" + str(inc) + " ? ",end="")
             else:
@@ -181,7 +183,7 @@ class virtualMachine:
                 continue
             
             
-            if incoming != "-999999" and incoming != "save":
+            if incoming != "-999999" and incoming != "save" and incoming !="load":
                 self.InstructCounter +=1
                 self.memory[inc] = int(incoming)#setting input to memory location
                 inc += 1
@@ -201,6 +203,17 @@ class virtualMachine:
                         file1.write(f'{opcode}\n')
                         op = OpcodeObject(opcode)
                         #print(op.operator, op.operand)
+        if incoming == "load":
+            print("loading from file")
+            filename = input('Enter relative file name: ')
+            print(filename)
+            self.memory = [None] * 100
+            for i in range(100):
+                self.memory[i] = 0
+            with open(filename, "r") as file1:
+                opcodes = [ast.literal_eval(line) for line in file1]
+                for opcode in opcodes:
+                    print(opcode)
 #########################################################
     def loadingStarting(self):
         print("*** Program loading completed ***\n*** Program execution begins ***")
