@@ -7,7 +7,7 @@ Andrew Campbell
 import math
 from abc import ABC, abstractmethod
 import ast
-import importlib
+import importlib, datetime
 #SLIGHT CHANGE!!
 
 """
@@ -108,6 +108,8 @@ class virtualMachine:
             return print(f'No input detected'), self.validate_pass
             return print(f'No input detected')
 
+        if user_input == "save":
+            return (f'Saving')
         # check for none integer input
         if user_input.isalpha():
             self.validate_pass = False
@@ -166,7 +168,7 @@ class virtualMachine:
         incoming = None
         inc = 0
 
-        while incoming != "-999999":
+        while (incoming != "-999999" and incoming != "save"):
             if inc < 10:
                 print("0" + str(inc) + " ? ",end="")
             else:
@@ -179,10 +181,26 @@ class virtualMachine:
                 continue
             
             
-            if incoming != "-999999":
+            if incoming != "-999999" and incoming != "save":
                 self.InstructCounter +=1
                 self.memory[inc] = int(incoming)#setting input to memory location
                 inc += 1
+        # Save to a file
+        if incoming == "save":
+            #Generate a unique file name
+            basename = 'UVSIM'
+            suffix = datetime.datetime.now().strftime("%y%m%d_%H%M%S")
+            filename = "_".join([basename, suffix])
+            #print(filename)
+
+            #Write each opcode sequentially into the file
+            with open(f"{filename}.txt", "w") as file1:
+                for opcode in self.memory:
+                    if opcode != 0:
+                        #print(f'{type(opcode)}, {opcode}')
+                        file1.write(f'{opcode}\n')
+                        op = OpcodeObject(opcode)
+                        #print(op.operator, op.operand)
 #########################################################
     def loadingStarting(self):
         print("*** Program loading completed ***\n*** Program execution begins ***")
