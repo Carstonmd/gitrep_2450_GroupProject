@@ -53,10 +53,6 @@ class virtualMachine:
 
     #This is where our function definitions are
 
-    #logError does not return anything but will post an error log to console, I believe.
-    def LogError(self,message):
-        print("Returns nothing")
-    
     #Dump, display all whats stored in memory
     def Dump(self):
         print("\nREGISTERS:          ")
@@ -187,6 +183,7 @@ class virtualMachine:
                 self.InstructCounter +=1
                 self.memory[inc] = int(incoming)#setting input to memory location
                 inc += 1
+
         # Save to a file
         if incoming == "save":
             #Generate a unique file name
@@ -201,8 +198,9 @@ class virtualMachine:
                     if opcode != 0:
                         #print(f'{type(opcode)}, {opcode}')
                         file1.write(f'{opcode}\n')
-                        op = OpcodeObject(opcode)
                         #print(op.operator, op.operand)
+            
+            print(f'saved to {filename}.txt')
         if incoming == "load":
             print("loading from file")
             filename = input('Enter relative file name: ')
@@ -214,6 +212,8 @@ class virtualMachine:
                 opcodes = [ast.literal_eval(line) for line in file1]
                 for opcode in opcodes:
                     print(opcode)
+                    op = OpcodeObject(opcode)
+                    print(op.operator, op.operand)
 #########################################################
     def loadingStarting(self):
         print("*** Program loading completed ***\n*** Program execution begins ***")
@@ -268,11 +268,6 @@ class Opcodes(OpcodeObject):#took out virtualmachine
             ins_class.operation(opcode_operation,vm)
 
             #return operation_class
-
-    def opcode_execute(self,opcode_obj: OpcodeObject):
-        op_class = self.opcode_find(opcode_obj)
-        #return op_class(opcode_obj)
-            
             
 #io
 class read(OpcodeOperation, OpcodeObject, virtualMachine):#maybe needs OpcodeObject passed
