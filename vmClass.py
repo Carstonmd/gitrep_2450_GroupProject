@@ -41,8 +41,7 @@ class virtualMachine:
         self.operand = 0
         self.exitCode = -999999
         self.opCode = 0
-        self.storedOpCodes = []#list of input opcodes
-        self.storedMemory = []#list of input memory loccation
+        self.saved = False
         self.validate_pass = True
 
         self.InstructCounter = 0
@@ -186,21 +185,9 @@ class virtualMachine:
 
         # Save to a file
         if incoming == "save":
-            #Generate a unique file name
-            basename = 'UVSIM'
-            suffix = datetime.datetime.now().strftime("%y%m%d_%H%M%S")
-            filename = "_".join([basename, suffix])
-            #print(filename)
-
-            #Write each opcode sequentially into the file
-            with open(f"{filename}.txt", "w") as file1:
-                for opcode in self.memory:
-                    if opcode != 0:
-                        #print(f'{type(opcode)}, {opcode}')
-                        file1.write(f'{opcode}\n')
-                        #print(op.operator, op.operand)
-            
-            print(f'saved to {filename}.txt')
+            self.saved = True
+            self.save()
+        
         if incoming == "load":
             print("loading from file")
             filename = input('Enter relative file name: ')
@@ -214,6 +201,24 @@ class virtualMachine:
                     print(opcode)
                     op = OpcodeObject(opcode)
                     print(op.operator, op.operand)
+           
+    def save(self):
+        #Generate a unique file name
+        basename = 'UVSIM'
+        suffix = datetime.datetime.now().strftime("%y%m%d_%H%M%S")
+        filename = "_".join([basename, suffix])
+        #print(filename)
+
+        #Write each opcode sequentially into the file
+        with open(f"{filename}.txt", "w") as file1:
+            for opcode in self.memory:
+                if opcode != 0:
+                    #print(f'{type(opcode)}, {opcode}')
+                    file1.write(f'{opcode}\n')
+                    #print(op.operator, op.operand)
+            
+            print(f'saved to {filename}.txt')
+        exit()
 #########################################################
     def loadingStarting(self):
         print("*** Program loading completed ***\n*** Program execution begins ***")
@@ -274,7 +279,13 @@ class read(OpcodeOperation, OpcodeObject, virtualMachine):#maybe needs OpcodeObj
 
     def operation(self, opcode_obj: OpcodeObject,vm:virtualMachine):#
         operand = opcode_obj.operand
-        word = input("Enter a value: ")
+        check = False
+        while check == False:
+            word = input("Enter a value: ")
+            if word != "save":
+                check = True
+            else:
+                print("Cannot save at this point.")
         vm.memory[int(operand)] = int(word)
         vm.InstructRegister = opcode_obj.opcode_str
         #vm.InstructCounter = vm.memory.index(opcode_obj.opcode_str) + 1
