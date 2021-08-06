@@ -78,16 +78,14 @@ class virtualMachine:
     #this may return a string?
     def prompt(self):
         print("""
-            
-            _   ___   _____ ___ __  __ 
-            | | | \ \ / / __|_ _|  \/  |
-            | |_| |\ V /\__ \| || |\/| |
-            \___/  \_/ |___/___|_|  |_|
-                Welcome to UVSim
-        This program interprets and runs programs written in the BasicML language.
-        Usage: The program is entered line by line. Once your program has been entered enter -99999 to run the application.
-        You will be prompted with each line number sequentially followed by ? where you can input your BasicML for that line.
-            """)
+    
+    _   ___   _____ ___ __  __ 
+    | | | \ \ / / __|_ _|  \/  |
+    | |_| |\ V /\__ \| || |\/| |
+     \___/  \_/ |___/___|_|  |_|
+        Welcome to UVSim
+This program interprets and runs programs written in the BasicML language.
+    """)
         print("*** Please enter your program one instruction ***\n*** ( or data word ) at a time into the input ***\n*** text field. I will display the location ***\n*** number and a question mark (?). You then ***\n*** type the word for that location. Enter ***\n*** -999999 to stop entering your program. ***")
 
     #this will validate input from users
