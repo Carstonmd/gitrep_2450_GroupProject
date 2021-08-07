@@ -185,20 +185,11 @@ This program interprets and runs programs written in the BasicML language.
         if incoming == "save":
             self.saved = True
             self.save()
-        
+        # Load to a file
         if incoming == "load":
-            print("loading from file")
-            filename = input('Enter relative file name: ')
-            print(filename)
-            self.memory = [None] * 100
-            for i in range(100):
-                self.memory[i] = 0
-            with open(filename, "r") as file1:
-                opcodes = [ast.literal_eval(line) for line in file1]
-                for opcode in opcodes:
-                    print(opcode)
-                    op = OpcodeObject(opcode)
-                    print(op.operator, op.operand)
+            self.load(inc)
+            self.loadingStarting()
+           
            
     def save(self):
         #Generate a unique file name
@@ -217,6 +208,17 @@ This program interprets and runs programs written in the BasicML language.
             
             print(f'saved to {filename}.txt')
         exit()
+
+    def load(self, inc):
+        print("loading from file")
+        filename = input('Enter relative file name: ')
+        with open(filename, "r") as file:
+            for index, line in enumerate(file):
+                print(line)
+                self.InstructCounter +=1
+                self.memory[inc] = int(line)#setting input to memory location
+                inc += 1
+        
 #########################################################
     def loadingStarting(self):
         print("*** Program loading completed ***\n*** Program execution begins ***")
